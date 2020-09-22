@@ -120,10 +120,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.action_Open.triggered.connect(self.open_file)
         self.action_Exit_2.triggered.connect(MainWindow.close)
-        self.rdbMean.clicked.connect(self.Mean)
-        self.rdb_Blur.clicked.connect(self.Blur)
-        self.rdb_Gauss.clicked.connect(self.Gauss)
-        self.rdb_Median.clicked.connect(self.Median)
+        self.pushButton.clicked.connect(self.show)
         self.action_Exit_2.triggered.connect(MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -164,7 +161,16 @@ class Ui_MainWindow(object):
         self.label_6.show()
 
     def Mean(self):
-
+        img = cv2.imread('C:/Users/Administrator/PycharmProjects/pythonProject/data/cats.jpg').astype(np.float32) / 255
+        blur = cv2.imread('C:/Users/Administrator/PycharmProjects/pythonProject/data/cats.jpg').astype(np.float32) / 255
+        blur -= img.mean()
+        blur /= img.std()
+        plt.subplot(121), plt.imshow(img), plt.title('Original')
+        plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(blur), plt.title('Mean')
+        plt.xticks([]), plt.yticks([])
+        plt.show()
+        cv2.waitKey(0)
         print('Mean')
 
     def Blur(self):
@@ -196,6 +202,20 @@ class Ui_MainWindow(object):
         plt.xticks([]), plt.yticks([])
         plt.show()
         print('Median')
+    def show(self):
+        if(self.rdbMean.isChecked()):
+            # print('Mean')
+            # print('Apply is clicked')
+            self.Mean()
+        if(self.rdb_Blur.isChecked()):
+            self.Blur()
+        if(self.rdb_Gauss.isChecked()):
+            self.Gauss()
+        if(self.rdb_Median.isChecked()):
+            self.Median()
+        else:
+            self.label_6.setTextFormat("The filter hasn't been selected yet!!")
+
 
 if __name__ == "__main__":
     import sys
