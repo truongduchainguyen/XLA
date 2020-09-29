@@ -27,7 +27,10 @@ class UI(QtWidgets.QMainWindow):
 
         self.btn_open.clicked.connect(self.openFile)
         self.btn_open.clicked.connect(lambda: self.isClicked("btn_open"))
-        self.btn_apply.clicked.connect(self.blur)
+
+        #self.btn_apply.clicked.connect(self.blur)
+        self.btn_apply.clicked.connect(lambda: self.blur())
+
         self.btn_apply.clicked.connect(lambda: self.isClicked("btn_apply"))
 
 
@@ -57,15 +60,17 @@ class UI(QtWidgets.QMainWindow):
         q_img = QtGui.QImage(cv_img.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888).rgbSwapped()
         label.setPixmap(QtGui.QPixmap(q_img))
 
-    def blur(self, ksize = tuple((100,100))):
+    def blur(self, ksize= (100,100)):
         if self.image is not None:
-            img = cv2.blur(self.image, (100,100))
-            #cv2.imshow("cv_img", cv2.resize(img, tuple(self.lbl_output_image.size())))
+            img = cv2.blur(self.image, ksize)
+
+            # qt_size = self.lbl_output_image.size()
+            # cv2.imshow("cv_img", cv2.resize(img, (qt_size.width(), qt_size.height())))
+
             self.showImage(self.lbl_output_image, img)
             print(self.lbl_output_image.size().width(), self.lbl_output_image.size().height())
-            a = (100, 100)
-            print(type((100,100)), type(ksize), type(a))
-            print(ksize)
+        print(type((100,100)), type(ksize))
+        print(ksize)
 
 
 if __name__ == "__main__":
