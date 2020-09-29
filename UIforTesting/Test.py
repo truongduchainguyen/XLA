@@ -317,18 +317,21 @@ class Ui_MainWindow(object):
         self.btn_apply = QtWidgets.QPushButton(self.centralwidget)
         self.btn_apply.setGeometry(QtCore.QRect(580, 20, 75, 51))
         self.btn_apply.setObjectName("btn_apply")
-        self.radioButton = QtWidgets.QRadioButton(self.centralwidget)
-        self.radioButton.setGeometry(QtCore.QRect(160, 20, 121, 17))
-        self.radioButton.setObjectName("radioButton")
-        self.radioButton_2 = QtWidgets.QRadioButton(self.centralwidget)
-        self.radioButton_2.setGeometry(QtCore.QRect(160, 50, 121, 17))
-        self.radioButton_2.setObjectName("radioButton_2")
-        self.radioButton_3 = QtWidgets.QRadioButton(self.centralwidget)
-        self.radioButton_3.setGeometry(QtCore.QRect(290, 20, 121, 17))
-        self.radioButton_3.setObjectName("radioButton_3")
         self.btn_Denoise = QtWidgets.QPushButton(self.centralwidget)
         self.btn_Denoise.setGeometry(QtCore.QRect(430, 20, 81, 51))
         self.btn_Denoise.setObjectName("btn_Denoise")
+        self.spb_x = QtWidgets.QSpinBox(self.centralwidget)
+        self.spb_x.setGeometry(QtCore.QRect(170, 40, 42, 22))
+        self.spb_x.setMinimum(1)
+        self.spb_x.setProperty("value", 1)
+        self.spb_x.setObjectName("spb_x")
+        self.spb_y = QtWidgets.QSpinBox(self.centralwidget)
+        self.spb_y.setGeometry(QtCore.QRect(220, 40, 42, 22))
+        self.spb_y.setMinimum(1)
+        self.spb_y.setObjectName("spb_y")
+        self.lbl_kernel = QtWidgets.QLabel(self.centralwidget)
+        self.lbl_kernel.setGeometry(QtCore.QRect(170, 10, 81, 16))
+        self.lbl_kernel.setObjectName("lbl_kernel")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1186, 21))
@@ -350,9 +353,8 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.btn_open.clicked.connect(self.openFile)
         self.btn_Denoise.clicked.connect(self.denoise)
-        self.radioButton.clicked.connect(self.createKernel)
-        self.radioButton_2.clicked.connect(self.createKernel)
-        self.radioButton_3.clicked.connect(self.createKernel)
+        self.spb_x.valueChanged.connect(self.createKernel)
+        self.spb_y.valueChanged.connect(self.createKernel)
         self.btn_apply.clicked.connect(self.out_put)
         self.actionExit.triggered.connect(MainWindow.close)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -364,10 +366,8 @@ class Ui_MainWindow(object):
         self.lbl_input_image.setText(_translate("MainWindow", "Input"))
         self.lbl_output_image.setText(_translate("MainWindow", "Output"))
         self.btn_apply.setText(_translate("MainWindow", "Apply"))
-        self.radioButton.setText(_translate("MainWindow", "Average kernel 3x3"))
-        self.radioButton_2.setText(_translate("MainWindow", "Average kernel 7x7"))
-        self.radioButton_3.setText(_translate("MainWindow", "Average kernel 5x5"))
         self.btn_Denoise.setText(_translate("MainWindow", "Denoise"))
+        self.lbl_kernel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:600;\">Kernel Size</span></p></body></html>"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.actionOpen.setText(_translate("MainWindow", "Open"))
         self.actionExit.setText(_translate("MainWindow", "Exit"))
@@ -397,23 +397,14 @@ class Ui_MainWindow(object):
     def denoise(self):
         # if self.image is not None:
         noise = np.zeros(self.image.shape, dtype=np.uint8)
-        cv2.randn(noise, 0, 150)
+        cv2.randn(noise, 0, 255)
         new_img = self.image + noise
         self.showImage(self.lbl_input_image, new_img)
 
     def createKernel(self):
-        self.kernel_3x3 = np.ones((3, 3), np.float32) / 9
-        self.kernel_5x5 = np.ones((5, 5), np.float32) / 25
-        self.kernel_7x7 = np.ones((7, 7), np.float32) / 49
-        if self.radioButton.isChecked():
-            # print(kernel_3x3)
-            return self.kernel_3x3
-        if self.radioButton_2.isChecked():
-            # print((kernel_7x7))
-            return self.kernel_7x7
-        if self.radioButton_3.isChecked():
-            # print(kernel_5x5)
-            return self.kernel_5x5
+
+        self.kernel_size = np.ones((self.spb_x.value(), self.spb_y.value()), np.float32) / (self.spb_x.value()*self.spb_y.value())
+        return self.kernel_size
 
     def out_put(self):
         self.result_kernel = self.createKernel()
@@ -421,7 +412,6 @@ class Ui_MainWindow(object):
         if self.image is not None:
             img = cv2.filter2D(self.image, -1, self.result_kernel)
             self.showImage(self.lbl_output_image, img)
-
 
 if __name__ == "__main__":
     import sys
