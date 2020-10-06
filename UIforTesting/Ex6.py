@@ -11,6 +11,8 @@ import numpy as np
 from PyQt5 import QtCore, QtGui, QtWidgets
 import random
 from PIL import Image
+import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -353,7 +355,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.btn_open.clicked.connect(self.openFile)
-        self.btn_Denoise.clicked.connect(self.denoise)
+        self.btn_Denoise.clicked.connect(self.draw3D) #denoise
         self.spb_x.valueChanged.connect(self.createKernel)
         self.spb_y.valueChanged.connect(self.createKernel)
         self.btn_apply.clicked.connect(self.out_put)
@@ -367,7 +369,7 @@ class Ui_MainWindow(object):
         self.lbl_input_image.setText(_translate("MainWindow", "Input"))
         self.lbl_output_image.setText(_translate("MainWindow", "Output"))
         self.btn_apply.setText(_translate("MainWindow", "Apply"))
-        self.btn_Denoise.setText(_translate("MainWindow", "Denoise"))
+        self.btn_Denoise.setText(_translate("MainWindow", "Draw 3D"))
         self.lbl_kernel.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:10pt; font-weight:600;\">Kernel Size</span></p></body></html>"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.actionOpen.setText(_translate("MainWindow", "Open"))
@@ -430,12 +432,57 @@ class Ui_MainWindow(object):
         return self.kernel_size
 
     def out_put(self):
-        self.result_kernel = self.createKernel()
+        #self.result_kernel = self.createKernel()
         # # print(self.result_kernel)
-        if self.image is not None:
-            img = cv2.filter2D(self.output, -1, (self.row, self.column))
+        #if self.image is not None:
+            #img = cv2.filter2D(self.output, -1, (self.row, self.column))
         # self.showImage(self.lbl_output_image, newimg)
-            self.showImage(self.lbl_output_image, img)
+        self.showImage(self.lbl_output_image, self.image)
+
+        sx, sy, channel = self.image.shape
+        #sy = self.image.shape
+        x = np.arange(-sx / 2, sx / 2)
+        y = np.arange(-sy / 2, sy / 2)
+        #print(type(x))
+        [x, y] = np.meshgrid(x, y)
+        mg = np.sqrt(x ** 2 + y**2)
+        z = np.sin(mg)
+        print(self.image)
+        print(type(self.image))
+        #print(type(mg)
+        fig = plt.figure()
+        ax = fig.gca(projection = '3d')
+        #ax.plot_wireframe(x, y, z, color = 'purple', linewidth = 0.8)
+        ax.plot_surface(x, y, z, rstride = 1, cstride = 1, cmap = 'viridis', edgecolor = 'none')
+        #ax = plt.axes(projection = '3d')(
+        # ax.set_zlim(-1.01, 1.01)
+        # ax.zaxis.set_major_locator(ticker.LinearLocator(10))
+        # ax.zaxis.set_major_formatter(ticker.FormatStrFormatter(''))
+        plt.show()
+        
+
+    
+    def draw3D(self):
+        hr = 4 / 2
+        hc = 4 / 2
+
+        x = np.arange(-hc, hc)
+        y = np.arange(-hr, hr)
+
+        [x, y] = np.meshgrid(x, y)
+        mg = np.sqrt(x ** 2 + y**2)
+        z = np.sin(mg)
+        #print(mg)
+        fig = plt.figure()
+        ax = fig.gca(projection = '3d')
+        ax.plot_wireframe(x, y, z, color = 'black', linewidth = 0.8)
+        #ax.plot_surface(x, y, z, rstride = 1, cstride = 1, cmap = 'viridis', edgecolor = 'none')
+        #ax = plt.axes(projection = '3d')(
+        # ax.set_zlim(-1.01, 1.01)
+        # ax.zaxis.set_major_locator(ticker.LinearLocator(10))
+        # ax.zaxis.set_major_formatter(ticker.FormatStrFormatter(''))
+        plt.show()
+        
 
 if __name__ == "__main__":
     import sys

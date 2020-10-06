@@ -3,12 +3,14 @@ import sys
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import scipy
+from scipy import signal, misc
 
 class UI(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi('Test.ui', self)
+        uic.loadUi('Ex', self)
 
         self.image = None
 
@@ -71,7 +73,18 @@ class UI(QtWidgets.QMainWindow):
             print(self.lbl_output_image.size().width(), self.lbl_output_image.size().height())
         print(type((100,100)), type(ksize))
         print(ksize)
-
+    
+    def medfilt_th(self, old=None, n=None, thresh=None):
+        [io, jo] = old.size()
+        new = scipy.signal.medfilt2(old, ([n, n]))
+        old = float(old)
+        new = float(new)
+        # DMJ modification - use threshold to determine whether new % values are filtered or not
+        for i in range(io):
+            for j in range(jo):
+                if abs(old(i, j) - new(i, j)) <= thresh:
+                    new(i, j).lvalue = old(i, j)
+                    new = np.uint8(new)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
