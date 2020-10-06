@@ -3,25 +3,36 @@ import sys
 import numpy as np
 import cv2
 import matplotlib.pyplot as plt
-import scipy
-from scipy import signal, misc
 
 class UI(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi('Ex', self)
+        uic.loadUi('Demo_Ex6.ui', self)
 
         self.image = None
 
         self.btn_open: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_open')
-        self.btn_apply: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_apply')
+        self.btn_show3D: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_show3D')
+        self.btn_showImage: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_showImage')
         self.lbl_input_image: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_input_image')
         self.lbl_output_image: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_output_image')
+        #self.lbl_kernel: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_kernel')
+        #self.lbl_kernel_2: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_kernel_2')
+        self.lbl_kernel_3: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_kernel_3')
+        self.lbl_kernel_4: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_kernel_4')
+        self.lbl_n: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_n')
+        self.lbl_sigma: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_sigma')
+        self.lbl_D0: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_D0')
+        self.lbl_Params: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_Params')
+
+
+
         self.radioButton: QtWidgets.QRadioButton = self.findChild(QtWidgets.QRadioButton, 'radioButton')
         self.radioButton_2: QtWidgets.QRadioButton = self.findChild(QtWidgets.QRadioButton, 'radioButton_2')
         self.radioButton_3: QtWidgets.QRadioButton = self.findChild(QtWidgets.QRadioButton, 'radioButton _3')
         self.radioButton_4: QtWidgets.QRadioButton = self.findChild(QtWidgets.QRadioButton, 'radioButton_4')
+        self.radioButton_5: QtWidgets.QRadioButton = self.findChild(QtWidgets.QRadioButton, 'radioButton_5')
         self.menubar: QtWidgets.QMenuBar = self.findChild(QtWidgets.QMenuBar, 'menubar')
         self.menuFile: QtWidgets.QMenu = self.findChild(QtWidgets.QMenu, 'menuFile')
         self.actionOpen: QtWidgets.QAction = self.findChild(QtWidgets.QAction, 'actionOpen')
@@ -29,11 +40,6 @@ class UI(QtWidgets.QMainWindow):
 
         self.btn_open.clicked.connect(self.openFile)
         self.btn_open.clicked.connect(lambda: self.isClicked("btn_open"))
-
-        #self.btn_apply.clicked.connect(self.blur)
-        self.btn_apply.clicked.connect(lambda: self.blur())
-
-        self.btn_apply.clicked.connect(lambda: self.isClicked("btn_apply"))
 
 
 
@@ -46,7 +52,7 @@ class UI(QtWidgets.QMainWindow):
 
     def openFile(self):
         filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Open File', '', 'Image files (*.png *.xpm *.jpg)')
-        if filename:
+        if filename[0]:
             self.image = cv2.imread(filename[0])
             self.showImage(self.lbl_input_image, self.image)
             print(filename)
@@ -61,30 +67,7 @@ class UI(QtWidgets.QMainWindow):
         bytes_per_line = 3 * width
         q_img = QtGui.QImage(cv_img.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888).rgbSwapped()
         label.setPixmap(QtGui.QPixmap(q_img))
-
-    def blur(self, ksize= (100,100)):
-        if self.image is not None:
-            img = cv2.blur(self.image, ksize)
-
-            # qt_size = self.lbl_output_image.size()
-            # cv2.imshow("cv_img", cv2.resize(img, (qt_size.width(), qt_size.height())))
-
-            self.showImage(self.lbl_output_image, img)
-            print(self.lbl_output_image.size().width(), self.lbl_output_image.size().height())
-        print(type((100,100)), type(ksize))
-        print(ksize)
     
-    def medfilt_th(self, old=None, n=None, thresh=None):
-        [io, jo] = old.size()
-        new = scipy.signal.medfilt2(old, ([n, n]))
-        old = float(old)
-        new = float(new)
-        # DMJ modification - use threshold to determine whether new % values are filtered or not
-        for i in range(io):
-            for j in range(jo):
-                if abs(old(i, j) - new(i, j)) <= thresh:
-                    new(i, j).lvalue = old(i, j)
-                    new = np.uint8(new)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
