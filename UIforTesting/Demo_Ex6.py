@@ -460,26 +460,95 @@ class Ui_MainWindow(object):
         mg = np.sqrt(x ** 2 + y ** 2)
         H = np.exp((-mg)/2*(sigma**2))
         # print(H)
-        return H
+        return np.uint8(H)
+
+    def high_gauss(self):
+        return 1 - self.low_gauss(self.spb_sigma.value())
+
     def gauss_show3D(self):
         sx, sy, channel = self.image.shape
         x = np.arange(-sx / 2, sx / 2)
         y = np.arange(-sy / 2, sy / 2)
         [x, y] = np.meshgrid(x, y)
-        z = self.low_gauss(self.spb_sigma.value())
+        if self.radioButton_3.isChecked() & self.radioButton_4.isChecked():
+            z = self.low_gauss(self.spb_sigma.value())
+        if self.radioButton_3.isChecked() & self.radioButton_5.isChecked():
+            z = self.high_gauss()
         fig = plt.figure()
         ax = fig.gca(projection='3d')
         # ax.plot_wireframe(x, y, z, color = 'black', linewidth = 0.8)
         ax.plot_surface(x, y, z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
         plt.show()
+
+    def low_ideal(self, d0):
+        sx, sy, channel = self.image.shape
+        x = np.arange(-sx / 2, sx / 2)
+        y = np.arange(-sy / 2, sy / 2)
+        [x, y] = np.meshgrid(x, y)
+        mg = np.sqrt(x ** 2 + y ** 2)
+        return np.uint8(mg <= d0)
+
+    def high_ideal(self):
+        return 1 - self.low_ideal(self.spb_D0.value())
+
+    def ideal_show3D(self):
+        sx, sy, channel = self.image.shape
+        x = np.arange(-sx / 2, sx / 2)
+        y = np.arange(-sy / 2, sy / 2)
+        [x, y] = np.meshgrid(x, y)
+        if self.radioButton.isChecked() & self.radioButton_4.isChecked():
+            z = self.low_ideal(self.spb_D0.value())
+        if self.radioButton.isChecked() & self.radioButton_5.isChecked():
+            z = self.high_ideal()
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+        # ax.plot_wireframe(x, y, z, color = 'black', linewidth = 0.8)
+        ax.plot_surface(x, y, z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+        plt.show()
+
+    def low_butterworth(self, d0, n):
+        sx, sy, channel = self.image.shape
+        x = np.arange(-sx / 2, sx / 2)
+        y = np.arange(-sy / 2, sy / 2)
+        [x, y] = np.meshgrid(x, y)
+        mg = np.sqrt(x ** 2 + y ** 2)
+        return 1 / (1 + (mg / d0) ** (2 * n))
+
+    def high_butterworth(self):
+        return 1 - self.low_butterworth(self.spb_D0.value(), self.spb_n.value())
+
+    def butterworth_show3D(self):
+        sx, sy, channel = self.image.shape
+        x = np.arange(-sx / 2, sx / 2)
+        y = np.arange(-sy / 2, sy / 2)
+        [x, y] = np.meshgrid(x, y)
+        if self.radioButton_2.isChecked() & self.radioButton_4.isChecked():
+            z = self.low_butterworth(self.spb_D0.value(), self.spb_n.value())
+        if self.radioButton_2.isChecked() & self.radioButton_5.isChecked():
+            z = self.high_ideal()
+        fig = plt.figure()
+        ax = fig.gca(projection='3d')
+        # ax.plot_wireframe(x, y, z, color = 'black', linewidth = 0.8)
+        ax.plot_surface(x, y, z, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+        plt.show()
+
     def show3D(self):
-        if self.radioButton_3.isChecked() & self.radioButton_4.isChecked():
+        if self.radioButton.isChecked() & (self.radioButton_4.isChecked() | self.radioButton_5.isChecked()):
+            self.ideal_show3D()
+        if self.radioButton_2.isChecked() & (self.radioButton_4.isChecked() | self.radioButton_5.isChecked()):
+            self.butterworth_show3D()
+        if self.radioButton_3.isChecked() & (self.radioButton_4.isChecked() | self.radioButton_5.isChecked()):
             self.gauss_show3D()
     def output(self):
+        if self.radioButton.isChecked() & self.radioButton_4.isChecked():
+            H = self.low_ideal(self.spb_D0.value())
+            cv2.imshow("Low pass ideal", H)
+        if self.radioButton_2.isChecked() & self.radioButton_4.isChecked():
+            H = self.low_butterworth(self.spb_D0.value(), self.spb_n.value())
+            cv2.imshow("Low pass butterworth", H)
         if self.radioButton_3.isChecked() & self.radioButton_4.isChecked():
             H = self.low_gauss(self.spb_sigma.value())
-            if self.image is not None:
-                cv2.imshow("Low pass gauss", H)
+            cv2.imshow("Low pass gauss", H)
 
 
 
