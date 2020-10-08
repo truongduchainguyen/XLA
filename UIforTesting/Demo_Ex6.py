@@ -539,17 +539,38 @@ class Ui_MainWindow(object):
             self.butterworth_show3D()
         if self.radioButton_3.isChecked() & (self.radioButton_4.isChecked() | self.radioButton_5.isChecked()):
             self.gauss_show3D()
+
+    def apply(self, H):
+        if self.image is not None:
+            if len(self.image.shape) == 3:
+                sx, sy, channel = self.image.shape
+            else:
+                sx, sy = self.image.shape
+
+        G = np.fft.fftshift(np.fft.fft2(self.image))
+        Ip = G
+        if len(G.shape) == 3:
+            Ip[:,:,0] = H * G[:,:,0] 
+            Ip[:,:,1] = H * G[:,:,1]
+            Ip[:,:,2] = H * G[:,:,2] 
+        else:
+            Ip = G * H
+        im = np.abs(np.fft.ifft2(np.fft.ifftshift(Ip)))
+        cv2.imshow(im)
+        
     def output(self):
         if self.radioButton.isChecked() & self.radioButton_4.isChecked():
             H = self.low_ideal(self.spb_D0.value())
-            cv2.imshow("Low pass ideal", H)
+            #cv2.imshow("Low pass ideal", H)
+            self.apply_filter(H)
+
+
         if self.radioButton_2.isChecked() & self.radioButton_4.isChecked():
             H = self.low_butterworth(self.spb_D0.value(), self.spb_n.value())
             cv2.imshow("Low pass butterworth", H)
         if self.radioButton_3.isChecked() & self.radioButton_4.isChecked():
             H = self.low_gauss(self.spb_sigma.value())
             cv2.imshow("Low pass gauss", H)
-
 
 
 if __name__ == "__main__":
