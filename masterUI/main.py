@@ -41,9 +41,8 @@ class UI(QtWidgets.QMainWindow):
         #connection
         self.btn_open.clicked.connect(self.openFile)
         self.btn_open.clicked.connect(lambda: self.isClicked("btn_open"))
+        self.btn_apply.clicked.connect(lambda: self.isClicked("btn_apply"))
 
-        # self.btn_open.clicked.connect(lambda: self.isClicked("btn_open"))
-        # self.btn_open.clicked.connect(lambda: self.isClicked("btn_open"))
         self.show()
 
     def isClicked(self, obj):
