@@ -31,6 +31,8 @@ class UI(QtWidgets.QMainWindow):
         self.btn_transform: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_transform')
         self.btn_sobel: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_sobel')
         self.btn_prewitt: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_prewitt')
+        self.btn_suffer_1: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_suffer_1')
+        self.btn_suffer_2: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_suffer_2')
 
         self.grb_Tool: QtWidgets.QGroupBox = self.findChild(QtWidgets.QGroupBox, 'grb_Tool')
 
@@ -48,6 +50,10 @@ class UI(QtWidgets.QMainWindow):
         self.btn_sobel.clicked.connect(self.sobel)
         self.btn_prewitt.clicked.connect(lambda: self.isClicked("btn_prewitt"))
         self.btn_prewitt.clicked.connect(self.prewitt)
+        self.btn_suffer_1.clicked.connect(lambda: self.isClicked("btn_suffer_1"))
+        self.btn_suffer_1.clicked.connect(self.idontwanttosuffer1)
+        self.btn_suffer_2.clicked.connect(lambda: self.isClicked("btn_suffer_2"))
+        self.btn_suffer_2.clicked.connect(self.idontwanttosuffer2)
 
 
         self.show()
@@ -108,6 +114,36 @@ class UI(QtWidgets.QMainWindow):
         image4 = cv2.filter2D(self.image, -1, direct)
         cv2.imshow("prewitt_arctan", image4)        
     
+    def idontwanttosuffer1(self):
+        self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        ret,thresh1 = cv2.threshold(self.image,127,255,cv2.THRESH_BINARY)
+        ret,thresh2 = cv2.threshold(self.image,127,255,cv2.THRESH_TOZERO)
+        ret,thresh3 = cv2.threshold(self.image,127,255,cv2.THRESH_TRUNC)
+        ret,thresh4 = cv2.threshold(self.image,127,255,cv2.THRESH_OTSU)
+
+        titles = ['Original Image','BINARY','TOZERO','TRUNC','OTSU'] #
+        images = [self.image, thresh1, thresh2, thresh3, thresh4] #
+        for i in range(5):
+            plt.subplot(2,3,i+1),plt.imshow(images[i],'gray')
+            plt.title(titles[i])
+            plt.xticks([]),plt.yticks([])
+        plt.show()
+    
+    def idontwanttosuffer2(self):
+        self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        img = cv2.medianBlur(self.image,5)
+        ret,th1 = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
+        th2 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,11,2)
+        th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+        titles = ['Original Image', 'Global Thresholding (v = 127)',
+                    'Adaptive Mean Thresholding', 'Adaptive Gaussian Thresholding']
+        images = [img, th1, th2, th3]
+        for i in range(4):
+            plt.subplot(2,2,i+1),plt.imshow(images[i],'gray')
+            plt.title(titles[i])
+            plt.xticks([]),plt.yticks([])
+        plt.show()
+
 
 
 if __name__ == "__main__":
