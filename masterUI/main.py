@@ -9,11 +9,11 @@ class UI(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi('master.ui', self)
+        uic.loadUi('masterUI/master.ui', self)
 
         self.image = None
 
-        self.lbl_output_img: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_output_img')
+        self.lbl_input_img: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_input_img')
         self.lbl_zoom_input_img: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_zoom_input_img')
 
         self.btn_open: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_open')
@@ -29,6 +29,8 @@ class UI(QtWidgets.QMainWindow):
         self.btn_denoise: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_denoise')
         self.btn_noise: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_noise')
         self.btn_transform: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_transform')
+        self.btn_sobel: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_sobel')
+        self.btn_prewitt: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_prewitt')
 
         self.grb_Tool: QtWidgets.QGroupBox = self.findChild(QtWidgets.QGroupBox, 'grb_Tool')
 
@@ -42,6 +44,11 @@ class UI(QtWidgets.QMainWindow):
         self.btn_open.clicked.connect(self.openFile)
         self.btn_open.clicked.connect(lambda: self.isClicked("btn_open"))
         self.btn_apply.clicked.connect(lambda: self.isClicked("btn_apply"))
+        self.btn_sobel.clicked.connect(lambda: self.isClicked("btn_sobel"))
+        self.btn_sobel.clicked.connect(self.sobel)
+        self.btn_prewitt.clicked.connect(lambda: self.isClicked("btn_prewitt"))
+        self.btn_prewitt.clicked.connect(self.prewitt)
+
 
         self.show()
 
@@ -52,7 +59,7 @@ class UI(QtWidgets.QMainWindow):
         filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Open File', '', 'Image files (*.png *.xpm *.jpg)')
         if filename[0]:
             self.image = cv2.imread(filename[0])
-            self.showImage(self.lbl_input_image, self.image)
+            self.showImage(self.lbl_input_img, self.image)
             print(filename)
         else:
             print("invalid file")
@@ -65,6 +72,42 @@ class UI(QtWidgets.QMainWindow):
         bytes_per_line = 3 * width
         q_img = QtGui.QImage(cv_img.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888).rgbSwapped()
         label.setPixmap(QtGui.QPixmap(q_img))
+    
+    def sobel(self):
+        hx = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]])
+        hy = np.array([[1, 2, -1], [0, 0, 0], [-1, -2, -1]])
+
+        magnitude = np.abs(hx) + np.abs(hy)
+        direct = np.arctan(hy / hx)
+
+        #image = cv2.Sobel(self.image, -1, hx, hy)
+        
+        image1 = cv2.filter2D(self.image, -1, hx)
+        cv2.imshow("sobel_hx", image1)
+        image2 = cv2.filter2D(self.image, -1, hy)
+        cv2.imshow("sobel_hy", image2)
+
+        image3 = cv2.filter2D(self.image, -1, magnitude)
+        cv2.imshow("sobel_mag", image3)
+        image4 = cv2.filter2D(self.image, -1, direct)
+        cv2.imshow("sobel_arctan", image4)
+
+    def prewitt(self):
+        hx = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
+        hy = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
+
+        magnitude = magnitude = np.abs(hx) + np.abs(hy)
+        direct = np.arctan(hy / hx)
+
+        image1 = cv2.filter2D(self.image, -1, hx)
+        cv2.imshow("prewitt_hx", image1)
+        image2 = cv2.filter2D(self.image, -1, hy)
+        cv2.imshow("prewitt_hy", image2)
+        image3 = cv2.filter2D(self.image, -1, magnitude)
+        cv2.imshow("prewitt_mag", image3)
+        image4 = cv2.filter2D(self.image, -1, direct)
+        cv2.imshow("prewitt_arctan", image4)        
+    
 
 
 if __name__ == "__main__":
