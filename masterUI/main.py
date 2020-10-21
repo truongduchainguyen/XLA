@@ -33,6 +33,7 @@ class UI(QtWidgets.QMainWindow):
         self.btn_prewitt: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_prewitt')
         self.btn_suffer_1: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_suffer_1')
         self.btn_suffer_2: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_suffer_2')
+        self.btn_suffer_3: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_suffer_3')
 
         self.grb_Tool: QtWidgets.QGroupBox = self.findChild(QtWidgets.QGroupBox, 'grb_Tool')
 
@@ -54,7 +55,8 @@ class UI(QtWidgets.QMainWindow):
         self.btn_suffer_1.clicked.connect(self.idontwanttosuffer1)
         self.btn_suffer_2.clicked.connect(lambda: self.isClicked("btn_suffer_2"))
         self.btn_suffer_2.clicked.connect(self.idontwanttosuffer2)
-
+        self.btn_suffer_3.clicked.connect(lambda: self.isClicked("btn_suffer_3"))
+        self.btn_suffer_3.clicked.connect(self.idontwanttosuffer3)
 
         self.show()
 
@@ -144,6 +146,18 @@ class UI(QtWidgets.QMainWindow):
             plt.xticks([]),plt.yticks([])
         plt.show()
 
+    def idontwanttosuffer3(self): #grabcut
+        img = self.image
+        mask = np.zeros(img.shape[:2],np.uint8)
+        bgdModel = np.zeros((1,65),np.float64)
+        fgdModel = np.zeros((1,65),np.float64)
+        rect = (50,50,450,290)
+        cv2.grabCut(img,mask,rect,bgdModel,fgdModel,5,cv2.GC_INIT_WITH_RECT)
+        mask2 = np.where((mask==2)|(mask==0),0,1).astype('uint8')
+        img = img*mask2[:,:,np.newaxis]
+        plt.imshow(img),plt.colorbar(),plt.show()
+
+    def idontwanttosuffer4(self): #cái lồn gì đấy mà tôi chưa làm xong
 
 
 if __name__ == "__main__":
