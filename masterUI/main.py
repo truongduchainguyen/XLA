@@ -9,10 +9,10 @@ class UI(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi('masterUI/master.ui', self)
+        uic.loadUi('master.ui', self)
 
         self.image = None
-
+        self.path = ''
         self.lbl_input_img: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_input_img')
         self.lbl_zoom_input_img: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_zoom_input_img')
 
@@ -65,10 +65,11 @@ class UI(QtWidgets.QMainWindow):
 
     def openFile(self):
         filename = QtWidgets.QFileDialog.getOpenFileName(None, 'Open File', '', 'Image files (*.png *.xpm *.jpg)')
-        if filename[0]:
+        if filename[0] != None:
+            self.path = filename[0]
             self.image = cv2.imread(filename[0])
             self.showImage(self.lbl_input_img, self.image)
-            print(filename)
+            # print(filename)
         else:
             print("invalid file")
 
@@ -132,19 +133,13 @@ class UI(QtWidgets.QMainWindow):
         plt.show()
     
     def idontwanttosuffer2(self):
-        self.image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
-        img = cv2.medianBlur(self.image,5)
-        ret,th1 = cv2.threshold(img,127,255,cv2.THRESH_BINARY)
-        th2 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY,11,2)
-        th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-        titles = ['Original Image', 'Global Thresholding (v = 127)',
-                    'Adaptive Mean Thresholding', 'Adaptive Gaussian Thresholding']
-        images = [img, th1, th2, th3]
-        for i in range(4):
-            plt.subplot(2,2,i+1),plt.imshow(images[i],'gray')
-            plt.title(titles[i])
-            plt.xticks([]),plt.yticks([])
-        plt.show()
+        image = cv2.imread(self.path, 0)
+        # image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
+        image = cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
+        cv2.namedWindow('image', cv2.WINDOW_NORMAL)
+        cv2.imshow('image',image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
     def idontwanttosuffer3(self): #grabcut
         img = self.image
@@ -157,7 +152,7 @@ class UI(QtWidgets.QMainWindow):
         img = img*mask2[:,:,np.newaxis]
         plt.imshow(img),plt.colorbar(),plt.show()
 
-    def idontwanttosuffer4(self): #cái lồn gì đấy mà tôi chưa làm xong
+    # def idontwanttosuffer4(self): #cái lồn gì đấy mà tôi chưa làm xong
 
 
 if __name__ == "__main__":
