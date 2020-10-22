@@ -133,11 +133,13 @@ class UI(QtWidgets.QMainWindow):
         plt.show()
     
     def idontwanttosuffer2(self):
-        image = cv2.imread(self.path, 0)
         # image = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
-        image = cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,11,2)
-        cv2.namedWindow('image', cv2.WINDOW_NORMAL)
-        cv2.imshow('image',image)
+
+        result = self.apply_filter()
+
+        output = cv2.adaptiveThreshold(result, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 35, 2)
+        cv2.namedWindow('output', cv2.WINDOW_NORMAL)
+        cv2.imshow('output', output)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -153,7 +155,24 @@ class UI(QtWidgets.QMainWindow):
         plt.imshow(img),plt.colorbar(),plt.show()
 
     # def idontwanttosuffer4(self): #cái lồn gì đấy mà tôi chưa làm xong
+    def low_gauss(self, sigma = 3):
+        image = cv2.imread(self.path, 0)
+        sx, sy = image.shape
+        x = np.arange(-sy / 2, sy / 2)
+        y = np.arange(-sx / 2, sx / 2)
+        [x, y] = np.meshgrid(x, y)
+        mg = np.sqrt(x ** 2 + y ** 2)
+        H = np.exp((-mg) / 2 * (sigma ** 2))
+        # print(H)
+        return H
 
+    def apply_filter(self):
+        image = cv2.imread(self.path, 0)
+        H = self.low_gauss(0.4)
+        G = np.fft.fftshift(np.fft.fft2(image))
+        Ip = G * H
+        im = np.abs(np.fft.ifft2(np.fft.fftshift(Ip)))
+        return np.uint8(im)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
