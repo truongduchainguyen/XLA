@@ -1,0 +1,26 @@
+<RCC>
+  <qresource prefix="Grave">
+    <file>grave.png</file>
+  </qresource>
+  <qresource prefix="Grave2">
+    <file>grave_2.png</file>
+  </qresource>
+  <qresource prefix="Grave3">
+    <file>grave3.png</file>
+  </qresource>
+  <qresource prefix="BlackCat">
+    <file>blackcat-removebg-preview.png</file>
+  </qresource>
+  <qresource prefix="Bat">
+    <file>bat.png</file>
+  </qresource>
+  <qresource prefix="Bugi">
+    <file>bugi.png</file>
+  </qresource>
+  <qresource prefix="Tien">
+    <file>Tien.png</file>
+  </qresource>
+  <qresource prefix="Toan">
+    <file>Toan.png</file>
+  </qresource>
+</RCC>
