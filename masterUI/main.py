@@ -1,11 +1,18 @@
-from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import sys
-import numpy as np
 import cv2
+import numpy as np
 import matplotlib.pyplot as plt
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
+from qdialog_brightness import Ui_dialog_brightness
 
-class UI(QtWidgets.QMainWindow):
+# class Ui_dialog_brightness(QtWidgets.QDialog):
+#     def __init__(self):
+#         super().__init__()
+#         uic.loadUi('dialog_brightness.ui', self)
+#         self.show()
+
+class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
@@ -75,14 +82,15 @@ class UI(QtWidgets.QMainWindow):
         self.btn_transform.clicked.connect(lambda: self.isClicked('btn_transform'))
         self.btn_threshold.clicked.connect(lambda: self.isClicked('btn_threshold'))
         #buttons
-        self.btn_open.clicked.connect(self.openFile)
-        self.btn_sobel.clicked.connect(self.sobel)
-        self.btn_prewitt.clicked.connect(self.prewitt)
-        self.btn_threshold.clicked.connect(self.applyThreshold)
         self.btn_adaptive_threshold.clicked.connect(self.applyAdaptiveThreshold)
+        self.btn_brightness.clicked.connect(self.brightness)
         self.btn_grabcut.clicked.connect(self.grabcut)
-        self.btn_revert.clicked.connect(lambda : self.showImage(self.lbl_input_img))
+        self.btn_open.clicked.connect(self.openFile)
         self.btn_invert_color.clicked.connect(self.invertColor)
+        self.btn_prewitt.clicked.connect(self.prewitt)
+        self.btn_revert.clicked.connect(lambda : self.showImage(self.lbl_input_img))
+        self.btn_sobel.clicked.connect(self.sobel)
+        self.btn_threshold.clicked.connect(self.applyThreshold)
 
         #actions
         self.actionOpen.triggered.connect(self.openFile)
@@ -124,13 +132,16 @@ class UI(QtWidgets.QMainWindow):
         #if cv_img is None:
         #    cv_img = self.image
         if self.image is not None:
-            #height, width, channel = self.image.shape
-            # for h in range(0, height):
-            #     for w in range(0, width):
-            #         for c in range(0, channel):
-            #             self.image[h,w,c] = 255 - self.image[h,w,c]
             self.image = 255 - self.image
             self.showImage(self.lbl_input_img)
+        else:
+            print("Warning: self.image is empty.")
+
+    def brightness(self):
+        if self.image is not None:
+            dl_brightness = Ui_dialog_brightness()
+            dl_brightness.exec_()
+            #self.showImage(self.lbl_input_img)
         else:
             print("Warning: self.image is empty.")
 
@@ -249,5 +260,5 @@ class UI(QtWidgets.QMainWindow):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    tmp = UI()
+    tmp = Ui_MainWindow()
     app.exec_()
