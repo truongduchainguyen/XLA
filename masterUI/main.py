@@ -12,6 +12,7 @@ class UI(QtWidgets.QMainWindow):
         uic.loadUi('master.ui', self)
 
         '''preloaded'''
+        self.original_image = None
         self.image = None
         self.path = ''
 
@@ -81,6 +82,8 @@ class UI(QtWidgets.QMainWindow):
         self.btn_adaptive_threshold.clicked.connect(self.applyAdaptiveThreshold)
         self.btn_grabcut.clicked.connect(self.grabcut)
         self.btn_revert.clicked.connect(lambda : self.showImage(self.lbl_input_img))
+        self.btn_invert_color.clicked.connect(self.invertColor)
+
         #actions
         self.actionOpen.triggered.connect(self.openFile)
         '''end connection'''
@@ -101,6 +104,7 @@ class UI(QtWidgets.QMainWindow):
         if filename[0] != '' and filename[0] != None:
             self.path = filename[0]
             self.image = cv2.imread(filename[0])
+            self.original_image = self.image
             self.showImage(self.lbl_input_img, self.image)
         else:
             print("invalid file")
@@ -108,7 +112,7 @@ class UI(QtWidgets.QMainWindow):
     def showImage(self, label: QtWidgets.QLabel, cv_img = None):
         if cv_img is None:
             cv_img = self.image
-        if self.image is not None:
+        if cv_img is not None:
                 height, width = cv_img.shape[:2]
                 bytes_per_line = 3 * width
                 q_img = QtGui.QImage(cv_img.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888).rgbSwapped()
@@ -117,7 +121,18 @@ class UI(QtWidgets.QMainWindow):
             print("Warning: self.image is empty.")
 
     def invertColor(self):
-        pass
+        #if cv_img is None:
+        #    cv_img = self.image
+        if self.image is not None:
+            #height, width, channel = self.image.shape
+            # for h in range(0, height):
+            #     for w in range(0, width):
+            #         for c in range(0, channel):
+            #             self.image[h,w,c] = 255 - self.image[h,w,c]
+            self.image = 255 - self.image
+            self.showImage(self.lbl_input_img)
+        else:
+            print("Warning: self.image is empty.")
 
     def sobel(self):
         hx = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]])
