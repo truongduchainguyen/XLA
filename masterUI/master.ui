@@ -161,6 +161,15 @@
          </color>
         </brush>
        </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="NoBrush">
+         <color alpha="128">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
       </active>
       <inactive>
        <colorrole role="WindowText">
@@ -298,6 +307,15 @@
          </color>
         </brush>
        </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="NoBrush">
+         <color alpha="128">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
       </inactive>
       <disabled>
        <colorrole role="WindowText">
@@ -429,6 +447,15 @@
        <colorrole role="ToolTipText">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="NoBrush">
+         <color alpha="128">
           <red>0</red>
           <green>0</green>
           <blue>0</blue>
@@ -683,6 +710,15 @@
          </color>
         </brush>
        </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="NoBrush">
+         <color alpha="128">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
       </active>
       <inactive>
        <colorrole role="WindowText">
@@ -820,6 +856,15 @@
          </color>
         </brush>
        </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="NoBrush">
+         <color alpha="128">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
       </inactive>
       <disabled>
        <colorrole role="WindowText">
@@ -951,6 +996,15 @@
        <colorrole role="ToolTipText">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </colorrole>
+       <colorrole role="PlaceholderText">
+        <brush brushstyle="NoBrush">
+         <color alpha="128">
           <red>0</red>
           <green>0</green>
           <blue>0</blue>
@@ -1109,7 +1163,7 @@
       <string>Prewitt</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_suffer_1">
+    <widget class="QPushButton" name="btn_threshold">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1119,10 +1173,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>Suffer 1</string>
+      <string>Threshold</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_suffer_2">
+    <widget class="QPushButton" name="btn_adaptive_threshold">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1132,10 +1186,10 @@
       </rect>
      </property>
      <property name="text">
-      <string>Suffer 2</string>
+      <string>Adaptive Threshold</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_suffer_3">
+    <widget class="QPushButton" name="btn_grabcut">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -1145,7 +1199,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Suffer 3</string>
+      <string>Grabcut</string>
      </property>
     </widget>
    </widget>
@@ -1172,6 +1226,22 @@
      <string>Transform</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="btn_revert">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>0</y>
+      <width>75</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show original</string>
+    </property>
+    <property name="shortcut">
+     <string>Ctrl+O</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -1179,7 +1249,7 @@
      <x>0</x>
      <y>0</y>
      <width>1084</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
