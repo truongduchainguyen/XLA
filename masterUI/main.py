@@ -107,15 +107,14 @@ class UI(QtWidgets.QMainWindow):
         if cv_img is None:
             cv_img = self.image
         if self.image is not None:
-            height, width, channel = cv_img.shape
-            bytes_per_line = 3 * width
-            q_img = QtGui.QImage(cv_img.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888).rgbSwapped()
-            label.setPixmap(QtGui.QPixmap(q_img))
+                height, width = cv_img.shape[:2]
+                bytes_per_line = 3 * width
+                q_img = QtGui.QImage(cv_img.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888).rgbSwapped()
+                label.setPixmap(QtGui.QPixmap(q_img))
         else:
             print("Warning: self.image is empty.")
     
     def sobel(self):
-
         hx = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]])
         hy = np.array([[1, 2, -1], [0, 0, 0], [-1, -2, -1]])
 
@@ -127,13 +126,11 @@ class UI(QtWidgets.QMainWindow):
         if self.image is not None:
             image1 = cv2.filter2D(self.image, -1, hx)
             image2 = cv2.filter2D(self.image, -1, hy)
-            image3 = cv2.filter2D(self.image, -1, magnitude)
-            image4 = cv2.filter2D(self.image, -1, direct)
+            image3 = image1 + image2
 
-            self.createNamedWindow("sobel_hx", image1)
-            self.createNamedWindow("sobel_hy", image2)
-            self.createNamedWindow("sobel_mag", image3)
-            self.createNamedWindow("sobel_arctan", image4)
+            self.showImage(self.lbl_input_img, image3)
+            #self.createNamedWindow("sobel_hx", image1)
+            #self.createNamedWindow("sobel_hy", image2)
         else:
             print("Warning: self.image is empty.")
 
@@ -141,19 +138,21 @@ class UI(QtWidgets.QMainWindow):
         hx = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
         hy = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
 
-        magnitude = magnitude = np.abs(hx) + np.abs(hy)
+        #magnitude and direction
+        magnitude = np.abs(hx) + np.abs(hy)
         direct = np.arctan(hy / hx)
 
         if self.image is not None:
             image1 = cv2.filter2D(self.image, -1, hx)
             image2 = cv2.filter2D(self.image, -1, hy)
-            image3 = cv2.filter2D(self.image, -1, magnitude)
-            image4 = cv2.filter2D(self.image, -1, direct)
+            image3 = image1 + image2
 
-            self.createNamedWindow("prewitt_hx", image1)
-            self.createNamedWindow("prewitt_hy", image2)
-            self.createNamedWindow("prewitt_mag", image3)
-            self.createNamedWindow("prewitt_arctan", image4)
+            self.showImage(self.lbl_input_img, image3)
+
+            #self.createNamedWindow("prewitt_hx", image1)
+            #self.createNamedWindow("prewitt_hy", image2)
+            #self.createNamedWindow("prewitt", image3)
+
         else:
             print("Warning: self.image is empty.")
     
@@ -178,8 +177,7 @@ class UI(QtWidgets.QMainWindow):
     def applyAdaptiveThreshold(self):
         # this function kill the program
         # do not run
-        pass
-        '''
+
         if self.image is not None:
             result = self.apply_filter()
 
@@ -190,7 +188,7 @@ class UI(QtWidgets.QMainWindow):
             cv2.destroyAllWindows()
         else:
             print("Warning: self.image is empty.")
-        '''
+
     def grabcut(self): #grabcut
         if self.image is not None:
             img = self.image
@@ -205,7 +203,7 @@ class UI(QtWidgets.QMainWindow):
         else:
             print("Warning: self.image is empty.")
 
-    # def idontwanttosuffer4(self): #cái lồn gì đấy mà tôi chưa làm xong
+    # def idontwanttosuffer4(self):
     def low_gauss(self, sigma = 3):
         if self.image is not None:
             image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
@@ -226,6 +224,8 @@ class UI(QtWidgets.QMainWindow):
             Ip = G * H
             im = np.abs(np.fft.ifft2(np.fft.fftshift(Ip)))
             return np.uint8(im)
+        else:
+            print("Warning: self.image is empty")
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
