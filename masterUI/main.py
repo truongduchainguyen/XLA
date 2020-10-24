@@ -4,24 +4,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
-from qdialog_brightness import Ui_dialog_brightness
-
-# class Ui_dialog_brightness(QtWidgets.QDialog):
-#     def __init__(self):
-#         super().__init__()
-#         uic.loadUi('dialog_brightness.ui', self)
-#         self.show()
+from qdialog_brightness_contrast import Ui_dialog_brightness_contrast
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi('master.ui', self)
+        uic.loadUi('ui/master.ui', self)
 
         '''preloaded'''
         self.original_image = None
         self.image = None
         self.path = ''
+
+        '''for debugging'''
+        #please delete this in the final project
+        self.path = '../resource/Ididntseeshit.png'
+        self.original_image = cv2.imread(self.path)
+        self.image = cv2.imread(self.path)
+        '''end'''
 
         '''Find Children'''
         #labels
@@ -88,7 +89,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_open.clicked.connect(self.openFile)
         self.btn_invert_color.clicked.connect(self.invertColor)
         self.btn_prewitt.clicked.connect(self.prewitt)
-        self.btn_revert.clicked.connect(lambda : self.showImage(self.lbl_input_img))
+        self.btn_revert.clicked.connect(self.revertToOriginal)
         self.btn_sobel.clicked.connect(self.sobel)
         self.btn_threshold.clicked.connect(self.applyThreshold)
 
@@ -111,8 +112,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #print(filename)
         if filename[0] != '' and filename[0] != None:
             self.path = filename[0]
-            self.image = cv2.imread(filename[0])
-            self.original_image = self.image
+            self.original_image = cv2.imread(filename[0])
+            self.image = self.original_image
             self.showImage(self.lbl_input_img, self.image)
         else:
             print("invalid file")
@@ -128,6 +129,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         else:
             print("Warning: self.image is empty.")
 
+    def revertToOriginal(self):
+        if self.original_image is not None:
+            self.image = self.original_image
+            self.showImage(self.lbl_input_img)
+        else:
+            print('Warning: nothing was loaded, self.original_image is empty.')
+
+
+
     def invertColor(self):
         #if cv_img is None:
         #    cv_img = self.image
@@ -139,29 +149,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def brightness(self):
         if self.image is not None:
-            dl_brightness = Ui_dialog_brightness()
-            dl_brightness.exec_()
+            dl_brightness_contrast = Ui_dialog_brightness_contrast()
+            dl_brightness_contrast.exec_()
+            alpha = 1
+            beta = 0
+            if dl_brightness_contrast.result() == QtWidgets.QDialog.Accepted:
+                alpha = dl_brightness_contrast.hslider_contrast.value()/10
+                beta = dl_brightness_contrast.hslider_brightness.value()
+                self.image = cv2.convertScaleAbs(self.image, alpha=alpha ,beta=beta)
+                self.showImage(self.lbl_input_img, self.image)
+            if dl_brightness_contrast.result() == QtWidgets.QDialog.Rejected:
+                print('dialog rejected')
             #self.showImage(self.lbl_input_img)
-        else:
-            print("Warning: self.image is empty.")
-
-    def sobel(self):
-        hx = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]])
-        hy = np.array([[1, 2, -1], [0, 0, 0], [-1, -2, -1]])
-
-        magnitude = np.abs(hx) + np.abs(hy)
-        direct = np.arctan(hy / hx)
-
-        #image = cv2.Sobel(self.image, -1, hx, hy)
-
-        if self.image is not None:
-            image1 = cv2.filter2D(self.image, -1, hx)
-            image2 = cv2.filter2D(self.image, -1, hy)
-            image3 = image1 + image2
-
-            self.showImage(self.lbl_input_img, image3)
-            #self.createNamedWindow("sobel_hx", image1)
-            #self.createNamedWindow("sobel_hy", image2)
         else:
             print("Warning: self.image is empty.")
 
@@ -186,7 +185,27 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         else:
             print("Warning: self.image is empty.")
-    
+
+    def sobel(self):
+        hx = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]])
+        hy = np.array([[1, 2, -1], [0, 0, 0], [-1, -2, -1]])
+
+        magnitude = np.abs(hx) + np.abs(hy)
+        direct = np.arctan(hy / hx)
+
+        #image = cv2.Sobel(self.image, -1, hx, hy)
+
+        if self.image is not None:
+            image1 = cv2.filter2D(self.image, -1, hx)
+            image2 = cv2.filter2D(self.image, -1, hy)
+            image3 = image1 + image2
+
+            self.showImage(self.lbl_input_img, image3)
+            #self.createNamedWindow("sobel_hx", image1)
+            #self.createNamedWindow("sobel_hy", image2)
+        else:
+            print("Warning: self.image is empty.")
+
     def applyThreshold(self):
         if self.image is not None:
             image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
