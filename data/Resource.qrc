@@ -14,6 +14,12 @@
   <qresource prefix="Bat">
     <file>bat.png</file>
   </qresource>
+  <qresource prefix="Cross">
+    <file>cross.png</file>
+  </qresource>
+  <qresource prefix="Pumpkin">
+    <file>pumpkin.png</file>
+  </qresource>
   <qresource prefix="Bugi">
     <file>bugi.png</file>
   </qresource>
