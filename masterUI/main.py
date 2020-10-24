@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
+import random
 
 from qdialog_brightness_contrast import Ui_dialog_brightness_contrast
 
@@ -10,7 +11,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi('ui/master.ui', self)
+        #uic.loadUi('/ui/master.ui', self)
+        uic.loadUi(r'D:/XLA/masterUI/ui/master.ui', self) #của tôi bị đéo load được UI nên phải bỏ như này, 
+                                                        #có gì các gs cmt lại khi debug nhé
 
         '''preloaded'''
         self.original_image = None
@@ -92,6 +95,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_revert.clicked.connect(self.revertToOriginal)
         self.btn_sobel.clicked.connect(self.sobel)
         self.btn_threshold.clicked.connect(self.applyThreshold)
+        self.btn_show_diagram_3d.clicked.connect(self.draw3D)
+        self.btn_show_histogram.clicked.connect(self.drawHistogram)
 
         #actions
         self.actionOpen.triggered.connect(self.openFile)
@@ -293,6 +298,35 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             return np.uint8(im)
         else:
             print("Warning: self.image is empty")
+    
+    def draw3D(self):
+        hr = 4 / 2
+        hc = 4 / 2
+
+        x = np.arange(-hc, hc)
+        y = np.arange(-hr, hr)
+
+        [x, y] = np.meshgrid(x, y)
+        mg = np.sqrt(x ** 2 + y**2)
+        z = np.sin(mg)
+        #print(mg)
+        fig = plt.figure()
+        ax = fig.gca(projection = '3d')
+        ax.plot_wireframe(x, y, z, color = 'black', linewidth = 0.8)
+        #ax.plot_surface(x, y, z, rstride = 1, cstride = 1, cmap = 'viridis', edgecolor = 'none')
+        #ax = plt.axes(projection = '3d')(
+        # ax.set_zlim(-1.01, 1.01)
+        # ax.zaxis.set_major_locator(ticker.LinearLocator(10))
+        # ax.zaxis.set_major_formatter(ticker.FormatStrFormatter(''))
+        plt.show()
+    
+    def drawHistogram(self):
+        img = self.image
+        hist = cv2.calcHist([img],[0],None,[256],[0,256])
+
+        plt.hist(img.ravel(), 256, [0, 256])
+        plt.show()
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
