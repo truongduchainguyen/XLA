@@ -99,10 +99,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.show()
 
-    def isClicked(self, obj):
+    def isClicked(self, obj: str):
+        '''
+        Check if the object is clicked, result is printed in the console
+        :param obj: the name of the object, in string
+        :return: None
+        '''
         print("{} was clicked".format(obj))
 
-    def createNamedWindow(self, name, src):
+    def createNamedWindow(self, name: str, src: np.array):
+        '''
+        Show a popup window of the image
+        :param name: The name of the namedwindow
+        :param src: The image source in matrix or array
+        :return: None
+        '''
         cv2.namedWindow(name, cv2.WINDOW_NORMAL)
         cv2.imshow(name, src)
 
@@ -130,15 +141,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             print("Warning: self.image is empty.")
 
     def revertToOriginal(self):
+        '''
+        Revert back to the original loaded image
+        :return: None
+        '''
         if self.original_image is not None:
             self.image = self.original_image
             self.showImage(self.lbl_input_img)
         else:
             print('Warning: nothing was loaded, self.original_image is empty.')
 
-
-
     def invertColor(self):
+        '''
+        Invert the color of the image, this is done by assigning: pixel_value = 255 - pixel_value
+        :return: None
+        '''
         #if cv_img is None:
         #    cv_img = self.image
         if self.image is not None:
