@@ -35,6 +35,7 @@ class UI(QtWidgets.QMainWindow):
         self.btn_prewitt: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_prewitt')
         self.btn_rotate: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_rotate')
         self.btn_roberts: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_roberts')
+        self.btn_revert: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_revert')
         self.btn_sobel: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_sobel')
         self.btn_show_histogram: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_show_histogram')
         self.btn_show_diagram_3d: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_show_diagram_3d')
@@ -66,12 +67,12 @@ class UI(QtWidgets.QMainWindow):
         self.btn_prewitt.clicked.connect(lambda: self.isClicked('btn_prewitt'))
         self.btn_rotate.clicked.connect(lambda: self.isClicked('btn_rotate'))
         self.btn_roberts.clicked.connect(lambda: self.isClicked('btn_roberts'))
+        self.btn_revert.clicked.connect(lambda: self.isClicked('btn_revert'))
         self.btn_sobel.clicked.connect(lambda: self.isClicked('btn_sobel'))
         self.btn_show_histogram.clicked.connect(lambda: self.isClicked('btn_show_histogram'))
         self.btn_show_diagram_3d.clicked.connect(lambda: self.isClicked('btn_show_diagram_3d'))
         self.btn_transform.clicked.connect(lambda: self.isClicked('btn_transform'))
         self.btn_threshold.clicked.connect(lambda: self.isClicked('btn_threshold'))
-
         #buttons
         self.btn_open.clicked.connect(self.openFile)
         self.btn_sobel.clicked.connect(self.sobel)
@@ -79,6 +80,7 @@ class UI(QtWidgets.QMainWindow):
         self.btn_threshold.clicked.connect(self.applyThreshold)
         self.btn_adaptive_threshold.clicked.connect(self.applyAdaptiveThreshold)
         self.btn_grabcut.clicked.connect(self.grabcut)
+        self.btn_revert.clicked.connect(lambda : self.showImage(self.lbl_input_img))
         #actions
         self.actionOpen.triggered.connect(self.openFile)
         '''end connection'''
@@ -103,7 +105,7 @@ class UI(QtWidgets.QMainWindow):
         else:
             print("invalid file")
 
-    def showImage(self, label: QtWidgets.QLabel, cv_img):
+    def showImage(self, label: QtWidgets.QLabel, cv_img = None):
         if cv_img is None:
             cv_img = self.image
         if self.image is not None:
@@ -113,7 +115,10 @@ class UI(QtWidgets.QMainWindow):
                 label.setPixmap(QtGui.QPixmap(q_img))
         else:
             print("Warning: self.image is empty.")
-    
+
+    def invertColor(self):
+        pass
+
     def sobel(self):
         hx = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]])
         hy = np.array([[1, 2, -1], [0, 0, 0], [-1, -2, -1]])
