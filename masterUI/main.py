@@ -93,6 +93,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_invert_color.clicked.connect(self.invertColor)
         self.btn_prewitt.clicked.connect(self.prewitt)
         self.btn_revert.clicked.connect(self.revertToOriginal)
+        self.btn_rotate.clicked.connect(self.rotateImage)
         self.btn_sobel.clicked.connect(self.sobel)
         self.btn_threshold.clicked.connect(self.applyThreshold)
         self.btn_show_diagram_3d.clicked.connect(self.draw3D)
@@ -153,6 +154,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if self.original_image is not None:
             self.image = self.original_image
             self.showImage(self.lbl_input_img)
+        else:
+            print('Warning: nothing was loaded, self.original_image is empty.')
+
+    def rotateImage(self):
+        if self.image is not None:
+            self.image = cv2.rotate(self.image, cv2.ROTATE_90_CLOCKWISE)
+            self.showImage(self.lbl_input_img, self.image)
         else:
             print('Warning: nothing was loaded, self.original_image is empty.')
 
