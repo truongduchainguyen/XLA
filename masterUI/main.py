@@ -11,8 +11,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi('ui/master.ui', self)
-        #uic.loadUi(r'D:/XLA/masterUI/ui/master.ui', self) #của tôi bị đéo load được UI nên phải bỏ như này,
+        #uic.loadUi('ui/master.ui', self)
+        uic.loadUi(r'D:/XLA/masterUI/ui/master.ui', self) #của tôi bị đéo load được UI nên phải bỏ như này,
         #có gì các gs cmt lại khi debug nhé
 
         '''preloaded'''
@@ -98,6 +98,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_threshold.clicked.connect(self.applyThreshold)
         self.btn_show_diagram_3d.clicked.connect(self.draw3D)
         self.btn_show_histogram.clicked.connect(self.drawHistogram)
+        self.btn_denoise.clicked.connect(self.denoise)
 
         #actions
         self.actionOpen.triggered.connect(self.openFile)
@@ -336,6 +337,28 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         plt.hist(img.ravel(), 256, [0, 256])
         plt.show()
+    
+    def denoise(self):
+        # if self.image is not None:
+        prob = 0.01
+        self.output = np.zeros(self.image.shape, np.uint8)
+        thres = 1 - prob
+        for i in range(self.image.shape[0]):
+            for j in range(self.image.shape[1]):
+                rdn = random.random()
+                if rdn < prob:
+                    self.output[i][j] = 0
+                elif rdn > thres:
+                    self.output[i][j] = 255
+                else:
+                    self.output[i][j] = self.image[i][j]
+        # return output
+        # noise = np.zeros(self.image.shape, dtype=np.uint8)
+        # cv2.randn(noise, 0, 255)
+        # new_img = self.image + noise
+        self.showImage(self.lbl_input_img, self.output)
+        # print(self.output.shape)
+        return self.output
 
 
 if __name__ == "__main__":
