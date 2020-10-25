@@ -11,9 +11,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        #uic.loadUi('/ui/master.ui', self)
-        uic.loadUi(r'D:/XLA/masterUI/ui/master.ui', self) #của tôi bị đéo load được UI nên phải bỏ như này, 
-                                                        #có gì các gs cmt lại khi debug nhé
+        uic.loadUi('ui/master.ui', self)
+        #uic.loadUi(r'D:/XLA/masterUI/ui/master.ui', self) #của tôi bị đéo load được UI nên phải bỏ như này,
+        #có gì các gs cmt lại khi debug nhé
 
         '''preloaded'''
         self.original_image = None
@@ -138,10 +138,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if cv_img is None:
             cv_img = self.image
         if cv_img is not None:
-                height, width = cv_img.shape[:2]
-                bytes_per_line = 3 * width
-                q_img = QtGui.QImage(cv_img.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888).rgbSwapped()
-                label.setPixmap(QtGui.QPixmap(q_img))
+            height, width = cv_img.shape[:2]
+            bytes_per_line = 3 * width
+            q_img = QtGui.QImage(cv_img.data, width, height, bytes_per_line, QtGui.QImage.Format_RGB888).rgbSwapped()
+            label.setPixmap(QtGui.QPixmap(q_img))
         else:
             print("Warning: self.image is empty.")
 
@@ -187,19 +187,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             print("Warning: self.image is empty.")
 
     def prewitt(self):
-        hx = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
-        hy = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
-
-        #magnitude and direction
-        magnitude = np.abs(hx) + np.abs(hy)
-        direct = np.arctan(hy / hx)
-
         if self.image is not None:
+            hx = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
+            hy = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
+
+            #magnitude and direction
+            magnitude = np.abs(hx) + np.abs(hy)
+            direct = np.arctan(hy / hx)
+
             image1 = cv2.filter2D(self.image, -1, hx)
             image2 = cv2.filter2D(self.image, -1, hy)
-            image3 = image1 + image2
+            self.image = image1 + image2
 
-            self.showImage(self.lbl_input_img, image3)
+            self.showImage(self.lbl_input_img, self.image)
 
             #self.createNamedWindow("prewitt_hx", image1)
             #self.createNamedWindow("prewitt_hy", image2)
@@ -208,21 +208,22 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         else:
             print("Warning: self.image is empty.")
 
+
     def sobel(self):
-        hx = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]])
-        hy = np.array([[1, 2, -1], [0, 0, 0], [-1, -2, -1]])
-
-        magnitude = np.abs(hx) + np.abs(hy)
-        direct = np.arctan(hy / hx)
-
-        #image = cv2.Sobel(self.image, -1, hx, hy)
-
         if self.image is not None:
+            hx = np.array([[1, 0, -1], [2, 0, -2], [1, 0, -1]])
+            hy = np.array([[1, 2, -1], [0, 0, 0], [-1, -2, -1]])
+
+            magnitude = np.abs(hx) + np.abs(hy)
+            direct = np.arctan(hy / hx)
+
+            #image = cv2.Sobel(self.image, -1, hx, hy)
+
             image1 = cv2.filter2D(self.image, -1, hx)
             image2 = cv2.filter2D(self.image, -1, hy)
-            image3 = image1 + image2
+            self.image = image1 + image2
 
-            self.showImage(self.lbl_input_img, image3)
+            self.showImage(self.lbl_input_img, self.image)
             #self.createNamedWindow("sobel_hx", image1)
             #self.createNamedWindow("sobel_hy", image2)
         else:
@@ -251,13 +252,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # do not run
 
         if self.image is not None:
-            result = self.apply_filter()
-
-            output = cv2.adaptiveThreshold(result, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 35, 2)
-            cv2.namedWindow('output', cv2.WINDOW_NORMAL)
-            cv2.imshow('output', output)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+            H = self.low_gauss(0.8)
+            img = self.applyFilter(H)
+            img = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 255, 2)
+            self.image = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+            self.showImage(self.lbl_input_img, self.image)
+            #cv2.namedWindow('output', cv2.WINDOW_NORMAL)
+            #cv2.imshow('output', output)
+            #cv2.waitKey(0)
+            #cv2.destroyAllWindows()
         else:
             print("Warning: self.image is empty.")
 
@@ -276,7 +279,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             print("Warning: self.image is empty.")
 
     # def idontwanttosuffer4(self):
-    def low_gauss(self, sigma = 3):
+    def low_gauss(self, sigma = 1):
         if self.image is not None:
             image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
             sx, sy = image.shape
@@ -288,17 +291,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             # print(H)
             return H
 
-    def apply_filter(self):
+    def applyFilter(self, H):
         if self.image is not None:
             image = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
-            H = self.low_gauss(0.4)
             G = np.fft.fftshift(np.fft.fft2(image))
             Ip = G * H
             im = np.abs(np.fft.ifft2(np.fft.fftshift(Ip)))
             return np.uint8(im)
         else:
             print("Warning: self.image is empty")
-    
+
     def draw3D(self):
         hr = 4 / 2
         hc = 4 / 2
@@ -319,7 +321,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # ax.zaxis.set_major_locator(ticker.LinearLocator(10))
         # ax.zaxis.set_major_formatter(ticker.FormatStrFormatter(''))
         plt.show()
-    
+
     def drawHistogram(self):
         img = self.image
         hist = cv2.calcHist([img],[0],None,[256],[0,256])
