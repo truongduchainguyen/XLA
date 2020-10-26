@@ -2,8 +2,11 @@ import sys
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from  matplotlib import cm
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import random
+
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 from qdialog_brightness_contrast import Ui_dialog_brightness_contrast
 
@@ -11,8 +14,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        #uic.loadUi('ui/master.ui', self)
-        uic.loadUi(r'D:/XLA/masterUI/ui/master.ui', self) #của tôi bị đéo load được UI nên phải bỏ như này,
+        uic.loadUi('ui/master.ui', self)
+        # uic.loadUi(r'D:/XLA/masterUI/ui/master.ui', self) #của tôi bị đéo load được UI nên phải bỏ như này,
         #có gì các gs cmt lại khi debug nhé
 
         '''preloaded'''
@@ -252,7 +255,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 plt.subplot(2,3,i+1),plt.imshow(images[i],'gray')
                 plt.title(titles[i])
                 plt.xticks([]),plt.yticks([])
-            plt.show()
+            plt.savefig('image/Threshold.png')
+            plt.clf()
+            Threshold_Image = cv2.imread('image/Threshold.png')
+            self.showImage(self.lbl_input_img, Threshold_Image)
+            # plt.show()
         else:
             print("Warning: self.image is empty.")
 
@@ -283,7 +290,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             cv2.grabCut(img,mask,rect,bgdModel,fgdModel,5,cv2.GC_INIT_WITH_RECT)
             mask2 = np.where((mask==2)|(mask==0),0,1).astype('uint8')
             img = img*mask2[:,:,np.newaxis]
-            plt.imshow(img),plt.colorbar(),plt.show()
+            # plt.imshow(img), plt.colorbar(), plt.show()
+
+            plt.imshow(img), plt.colorbar()
+
+            plt.savefig('image/Colorbar.png')
+            plt.clf()
+            Colorbar = cv2.imread('image/Colorbar.png')
+            self.showImage(self.lbl_input_img, Colorbar)
         else:
             print("Warning: self.image is empty.")
 
@@ -323,20 +337,33 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #print(mg)
         fig = plt.figure()
         ax = fig.gca(projection = '3d')
-        ax.plot_wireframe(x, y, z, color = 'black', linewidth = 0.8)
-        #ax.plot_surface(x, y, z, rstride = 1, cstride = 1, cmap = 'viridis', edgecolor = 'none')
+        # ax.plot_wireframe(x, y, z, color = 'black', linewidth = 0.8)
+        # ax.plot_surface(x, y, z, rstride = 1, cstride = 1, cmap = 'viridis', edgecolor = 'none')
+        surf = ax.plot_surface(x, y, z, cmap='coolwarm',
+                        linewidth=0, antialiased=False)
         #ax = plt.axes(projection = '3d')(
         # ax.set_zlim(-1.01, 1.01)
-        # ax.zaxis.set_major_locator(ticker.LinearLocator(10))
-        # ax.zaxis.set_major_formatter(ticker.FormatStrFormatter(''))
-        plt.show()
+        # ax.zaxis.set_major_locator(LinearLocator(10))
+        # ax.zaxis.set_major_formatter(FormatStrFormatter(''))
+        fig.colorbar(surf, shrink=0.5, aspect=5)
+        plt.savefig('image/3D_diagram.png')
+        plt.clf()
+        Diagram_Image = cv2.imread('image/3D_diagram.png')
+        self.showImage(self.lbl_input_img, Diagram_Image)
+        # plt.show()
 
     def drawHistogram(self):
         img = self.image
-        hist = cv2.calcHist([img],[0],None,[256],[0,256])
 
         plt.hist(img.ravel(), 256, [0, 256])
-        plt.show()
+
+        plt.savefig('image/Histogram.png')
+
+        plt.clf()
+
+        Histogram_Image = cv2.imread('image/Histogram.png')
+
+        self.showImage(self.lbl_input_img, Histogram_Image)
     
     def denoise(self):
         # if self.image is not None:
