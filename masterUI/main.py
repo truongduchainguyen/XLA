@@ -8,6 +8,7 @@ import random
 
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
+from dialog_kernel_size import Ui_Dialog_kernel_size
 from qdialog_brightness_contrast import Ui_dialog_brightness_contrast
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -37,7 +38,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.lbl_zoom_input_img: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_zoom_input_img')
         #buttons
         #self.btn_: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_') #use this for template
-        self.btn_apply: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_apply')
+        # self.btn_apply: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_apply')
         self.btn_adaptive_threshold: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_adaptive_threshold')
         self.btn_brightness: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_brightness')
         self.btn_denoise: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_denoise')
@@ -69,7 +70,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         '''end findChildren'''
         '''connection'''
         #is_clicked
-        self.btn_apply.clicked.connect(lambda: self.isClicked('btn_apply'))
+        # self.btn_apply.clicked.connect(lambda: self.isClicked('btn_apply'))
         self.btn_adaptive_threshold.clicked.connect(lambda: self.isClicked('btn_adaptive_threshold'))
         self.btn_brightness.clicked.connect(lambda: self.isClicked('btn_brightness'))
         self.btn_denoise.clicked.connect(lambda: self.isClicked('btn_denoise'))
@@ -89,8 +90,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_transform.clicked.connect(lambda: self.isClicked('btn_transform'))
         self.btn_threshold.clicked.connect(lambda: self.isClicked('btn_threshold'))
         #buttons
+        # self.btn_apply.clicked.connect(self.test_combobox)
         self.btn_adaptive_threshold.clicked.connect(self.applyAdaptiveThreshold)
         self.btn_brightness.clicked.connect(self.brightness)
+        self.btn_filter.clicked.connect(self.filter)
         self.btn_grabcut.clicked.connect(self.grabcut)
         self.btn_open.clicked.connect(self.openFile)
         self.btn_invert_color.clicked.connect(self.invertColor)
@@ -180,6 +183,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.showImage(self.lbl_input_img)
         else:
             print("Warning: self.image is empty.")
+
+    def filter(self):
+        if self.image is not None:
+            dl_kernel_size = Ui_Dialog_kernel_size()
+            dl_kernel_size.exec_()
+
+            if dl_kernel_size.result() == QtWidgets.QDialog.Accepted:
+                spb_x = dl_kernel_size.spb_x.value()
+                spb_y = dl_kernel_size.spb_y.value()
+                spb_z = dl_kernel_size.spb_z.value()
+                filter_type = dl_kernel_size.cbox_blur.currentIndex()
+                if filter_type == 0:
+                    self.Mean()
+                if filter_type == 1:
+                    self.Blur(spb_x, spb_y)
+                if filter_type == 2:
+                    self.Median(spb_z)
+                if filter_type == 3:
+                    self.Gauss(spb_x, spb_y)
 
     def brightness(self):
         if self.image is not None:
@@ -367,7 +389,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     
     def denoise(self):
         # if self.image is not None:
-        prob = 0.01
+        prob = 0.09
         self.output = np.zeros(self.image.shape, np.uint8)
         thres = 1 - prob
         for i in range(self.image.shape[0]):
@@ -387,6 +409,64 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # print(self.output.shape)
         return self.output
 
+    # def test_combobox(self):
+    #     type_of_filer = self.cbox_blur.currentIndex()
+    #     if type_of_filer == 0:
+    #         self.Mean()
+
+
+    def Mean(self):
+        img = self.image.astype(np.float32) / 255
+        blur = self.image.astype(np.float32) / 255
+        # img = cv2.imread('C:/Users/Administrator/PycharmProjects/pythonProject/data/cats.jpg').astype(np.float32) / 255
+        # blur = cv2.imread('C:/Users/Administrator/PycharmProjects/pythonProject/data/cats.jpg').astype(np.float32) / 255
+        blur -= img.mean()
+        blur /= img.std()
+        plt.subplot(121), plt.imshow(img), plt.title('Original')
+        plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(blur), plt.title('Mean')
+        plt.xticks([]), plt.yticks([])
+        plt.savefig('image/Mean.png')
+        plt.clf()
+        Mean_Filter_Image = cv2.imread('image/Mean.png')
+        self.showImage(self.lbl_input_img, Mean_Filter_Image)
+        # plt.show()
+
+    def Blur(self, kernel_x, kernel_y):
+        img = self.image
+        blur = cv2.blur(img, (kernel_x, kernel_y))
+        plt.subplot(121), plt.imshow(img), plt.title('Original')
+        plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(blur), plt.title('Blurred')
+        plt.xticks([]), plt.yticks([])
+        plt.savefig('image/Blur.png')
+        plt.clf()
+        Blur_Filter_Image = cv2.imread('image/Blur.png')
+        self.showImage(self.lbl_input_img, Blur_Filter_Image)
+
+    def Median(self, kernel_z):
+        img = self.denoise()
+        blur = cv2.medianBlur(img, kernel_z)
+        plt.subplot(121), plt.imshow(img), plt.title('Original')
+        plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(blur), plt.title('Median')
+        plt.xticks([]), plt.yticks([])
+        plt.savefig('image/Median.png')
+        plt.clf()
+        Median_Filter_Image = cv2.imread('image/Median.png')
+        self.showImage(self.lbl_input_img, Median_Filter_Image)
+
+    def Gauss(self, kernel_x, kernel_y):
+        img = self.denoise()
+        blur = cv2.GaussianBlur(img, (kernel_x, kernel_y), 0)
+        plt.subplot(121), plt.imshow(img), plt.title('Original')
+        plt.xticks([]), plt.yticks([])
+        plt.subplot(122), plt.imshow(blur), plt.title('Gauss')
+        plt.xticks([]), plt.yticks([])
+        plt.savefig('image/Gauss.png')
+        plt.clf()
+        Gauss_Filter_Image = cv2.imread('image/Gauss.png')
+        self.showImage(self.lbl_input_img, Gauss_Filter_Image)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
