@@ -16,11 +16,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         super().__init__()
 
         uic.loadUi('ui/master.ui', self)
-        # uic.loadUi(r'D:/XLA/masterUI/ui/master.ui', self) #của tôi bị đéo load được UI nên phải bỏ như này,
+        #uic.loadUi(r'D:/XLA/masterUI/ui/master.ui', self) #của tôi bị đéo load được UI nên phải bỏ như này,
         #có gì các gs cmt lại khi debug nhé
 
         '''preloaded'''
-        self.original_image = None
+        selgitf.original_image = None
         self.image = None
         self.path = ''
 
@@ -50,7 +50,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_open: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_open')
         self.btn_prewitt: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_prewitt')
         self.btn_rotate: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_rotate')
-        self.btn_roberts: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_roberts')
+        self.btn_kmeans: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_kmeans')
         self.btn_revert: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_revert')
         self.btn_sobel: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_sobel')
         self.btn_show_histogram: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_show_histogram')
@@ -82,7 +82,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_open.clicked.connect(lambda: self.isClicked('btn_open'))
         self.btn_prewitt.clicked.connect(lambda: self.isClicked('btn_prewitt'))
         self.btn_rotate.clicked.connect(lambda: self.isClicked('btn_rotate'))
-        self.btn_roberts.clicked.connect(lambda: self.isClicked('btn_roberts'))
+        self.btn_kmeans.clicked.connect(lambda: self.isClicked('btn_kmeans'))
         self.btn_revert.clicked.connect(lambda: self.isClicked('btn_revert'))
         self.btn_sobel.clicked.connect(lambda: self.isClicked('btn_sobel'))
         self.btn_show_histogram.clicked.connect(lambda: self.isClicked('btn_show_histogram'))
@@ -105,6 +105,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_show_diagram_3d.clicked.connect(self.draw3D)
         self.btn_show_histogram.clicked.connect(self.drawHistogram)
         self.btn_denoise.clicked.connect(self.denoise)
+        self.btn_kmeans.clicked.connect(self.kmeans)
 
         #actions
         self.actionOpen.triggered.connect(self.openFile)
@@ -468,7 +469,22 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         Gauss_Filter_Image = cv2.imread('image/Gauss.png')
         self.showImage(self.lbl_input_img, Gauss_Filter_Image)
 
+    def kmeans(self):
+        img = self.image
+        z = img.reshape((-1, 3))
+        z = np.float32(z)
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
+        K = 7
+        ret, label, center = cv2.kmeans(z, K, None, criteria, 10, cv2.KMEANS_RANDOM_CENTERS)
+
+        center = np.uint8(center)
+        res = center[label.flatten()]
+        res2 = res.reshape((img.shape))
+        self.showImage(self.lbl_input_img, res2)
+
 if __name__ == "__main__":
+    import os
+    print(os.getenv("PYTHONPATH", "NONE"))
     app = QtWidgets.QApplication(sys.argv)
     tmp = Ui_MainWindow()
     app.exec_()

@@ -1,3 +1,7 @@
 {
-    "python.pythonPath": "D:\\Anaconda\\python.exe"
+    "python.pythonPath": "D:\\Anaconda\\python.exe",
+    // "terminal.integrated.env.windows": {
+    //     "PYTHONPATH": "${env:PYTHONPATH};${workspaceFolder}/main.py",
+    // },
+    // "python.envFile": "${workspaceFolder}/xla.env"
 }
