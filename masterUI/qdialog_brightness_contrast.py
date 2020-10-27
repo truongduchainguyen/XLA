@@ -4,7 +4,7 @@ class Ui_dialog_brightness_contrast(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi('ui/dialog_brightness_contrast.ui', self)
+        uic.loadUi('masterUI/ui/dialog_brightness_contrast.ui', self)
         '''preloaded'''
 
         '''find children'''

@@ -15,7 +15,7 @@ class Ui_Dialog_kernel_size(QtWidgets.QDialog):
     def __init__(self):
         super().__init__()
 
-        uic.loadUi('ui/dialog_kernel_size.ui', self)
+        uic.loadUi('masterUI/ui/dialog_kernel_size.ui', self)
         '''preloaded'''
 
         '''find children'''
