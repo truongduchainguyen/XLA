@@ -20,7 +20,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #có gì các gs cmt lại khi debug nhé
 
         '''preloaded'''
-        selgitf.original_image = None
+        self.original_image = None
         self.image = None
         self.path = ''
 
