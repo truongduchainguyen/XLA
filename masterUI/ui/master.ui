@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>856</width>
-    <height>628</height>
+    <height>658</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -503,9 +503,9 @@
         </widget>
        </item>
        <item row="9" column="0">
-        <widget class="QPushButton" name="btn_roberts">
+        <widget class="QPushButton" name="btn_kmeans">
          <property name="text">
-          <string>Roberts</string>
+          <string>K-Means</string>
          </property>
         </widget>
        </item>
@@ -1066,7 +1066,7 @@
      <x>0</x>
      <y>0</y>
      <width>856</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
