@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from  matplotlib import cm
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import random
-
+import  Resource_rc
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 from dialog_kernel_size import Ui_Dialog_kernel_size
@@ -20,15 +20,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #có gì các gs cmt lại khi debug nhé
 
         '''preloaded'''
-        selgitf.original_image = None
+        self.original_image = None
         self.image = None
         self.path = ''
 
         '''for debugging'''
         #please delete this in the final project
-        self.path = '../resource/Ididntseeshit.png'
-        self.original_image = cv2.imread(self.path)
-        self.image = cv2.imread(self.path)
+        # self.path = '../resource/Ididntseeshit.png'
+        # self.original_image = cv2.imread(self.path)
+        # self.image = cv2.imread(self.path)
         '''end'''
 
         '''Find Children'''
@@ -46,7 +46,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_gamma: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_gamma')
         self.btn_grabcut: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_grabcut')
         self.btn_invert_color: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_invert_color')
-        self.btn_noise: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_noise')
         self.btn_open: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_open')
         self.btn_prewitt: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_prewitt')
         self.btn_rotate: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_rotate')
@@ -55,8 +54,33 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_sobel: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_sobel')
         self.btn_show_histogram: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_show_histogram')
         self.btn_show_diagram_3d: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_show_diagram_3d')
-        self.btn_transform: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_transform')
         self.btn_threshold: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_threshold')
+
+        #UI
+        self.lbl_background: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_background')
+        self.lbl_background_2: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_background_2')
+        self.lbl_tool: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_tool')
+        self.lbl_happy: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_happy')
+        self.lbl_option: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_option')
+        self.lbl_rotate: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_rotate')
+        self.lbl_brightness: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_brightness')
+        self.lbl_gamma: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_gamma')
+        self.lbl_invert: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_invert')
+        self.lbl_histogram: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_histogram')
+        self.lbl_diagram: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_diagram')
+        self.lbl_denoise: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_denoise')
+        self.lbl_sobel: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_sobel')
+        self.lbl_k_mean: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_k_mean')
+        self.lbl_prewitt: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_prewitt')
+        self.lbl_threshold: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_threshold')
+        self.lbl_adaptive_threshold: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_adaptive_threshold')
+        self.lbl_grabcut: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_grabcut')
+        self.lbl_bugi: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_bugi')
+        self.lbl_duotien: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_duotien')
+        self.lbl_toan: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_toan')
+
+        self.tabWidget: QtWidgets.QTabWidget = self.findChild(QtWidgets.QTabWidget, 'tabWidget')
+
 
         #group boxes
         self.grb_Tool: QtWidgets.QGroupBox = self.findChild(QtWidgets.QGroupBox, 'grb_Tool')
@@ -78,7 +102,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_gamma.clicked.connect(lambda: self.isClicked('btn_gamma'))
         self.btn_grabcut.clicked.connect(lambda: self.isClicked('btn_grabcut'))
         self.btn_invert_color.clicked.connect(lambda: self.isClicked('btn_invert_color'))
-        self.btn_noise.clicked.connect(lambda: self.isClicked('btn_noise'))
         self.btn_open.clicked.connect(lambda: self.isClicked('btn_open'))
         self.btn_prewitt.clicked.connect(lambda: self.isClicked('btn_prewitt'))
         self.btn_rotate.clicked.connect(lambda: self.isClicked('btn_rotate'))
@@ -87,7 +110,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_sobel.clicked.connect(lambda: self.isClicked('btn_sobel'))
         self.btn_show_histogram.clicked.connect(lambda: self.isClicked('btn_show_histogram'))
         self.btn_show_diagram_3d.clicked.connect(lambda: self.isClicked('btn_show_diagram_3d'))
-        self.btn_transform.clicked.connect(lambda: self.isClicked('btn_transform'))
         self.btn_threshold.clicked.connect(lambda: self.isClicked('btn_threshold'))
         #buttons
         # self.btn_apply.clicked.connect(self.test_combobox)
@@ -406,9 +428,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # noise = np.zeros(self.image.shape, dtype=np.uint8)
         # cv2.randn(noise, 0, 255)
         # new_img = self.image + noise
-        self.showImage(self.lbl_input_img, self.output)
+        self.image = self.output
+        self.showImage(self.lbl_input_img, self.image)
         # print(self.output.shape)
-        return self.output
+        return self.image
 
     # def test_combobox(self):
     #     type_of_filer = self.cbox_blur.currentIndex()
@@ -446,7 +469,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.showImage(self.lbl_input_img, Blur_Filter_Image)
 
     def Median(self, kernel_z):
-        img = self.denoise()
+        img = self.image
         blur = cv2.medianBlur(img, kernel_z)
         plt.subplot(121), plt.imshow(img), plt.title('Original')
         plt.xticks([]), plt.yticks([])
@@ -458,7 +481,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.showImage(self.lbl_input_img, Median_Filter_Image)
 
     def Gauss(self, kernel_x, kernel_y):
-        img = self.denoise()
+        img = self.image
         blur = cv2.GaussianBlur(img, (kernel_x, kernel_y), 0)
         plt.subplot(121), plt.imshow(img), plt.title('Original')
         plt.xticks([]), plt.yticks([])

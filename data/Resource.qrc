@@ -1,32 +1,80 @@
 <RCC>
-  <qresource prefix="Grave">
+  <qresource prefix="Background">
+    <file>background.jpg</file>
+  </qresource>
+  <qresource prefix="Background2">
+    <file>background_2.png</file>
+  </qresource>
+  <qresource prefix="Happyhalloween">
+    <file>happyhalloween.png</file>
+  </qresource>
+  <qresource prefix="ToolBackground">
     <file>grave.png</file>
   </qresource>
-  <qresource prefix="Grave2">
-    <file>grave_2.png</file>
+  <qresource prefix="OptionBackground">
+    <file>option.png</file>
   </qresource>
-  <qresource prefix="Grave3">
-    <file>grave3.png</file>
+  <qresource prefix="Open">
+    <file>open.png</file>
   </qresource>
-  <qresource prefix="BlackCat">
-    <file>blackcat-removebg-preview.png</file>
+  <qresource prefix="ShowOriginal">
+    <file>showoriginal.png</file>
   </qresource>
-  <qresource prefix="Bat">
-    <file>bat.png</file>
+  <qresource prefix="Filter">
+    <file>Filter.png</file>
   </qresource>
-  <qresource prefix="Cross">
-    <file>cross.png</file>
-  </qresource>
-  <qresource prefix="Pumpkin">
-    <file>pumpkin.png</file>
-  </qresource>
-  <qresource prefix="Bugi">
-    <file>bugi.png</file>
-  </qresource>
-  <qresource prefix="Tien">
+  <qresource prefix="InfoTien">
     <file>Tien.png</file>
   </qresource>
-  <qresource prefix="Toan">
+  <qresource prefix="InfoToan">
     <file>Toan.png</file>
+  </qresource>
+  <qresource prefix="InfoBugi">
+    <file>bugi.png</file>
+  </qresource>
+  <qresource prefix="ButtonIcon">
+    <file>bat.png</file>
+  </qresource>
+  <qresource prefix="ButtonIcon2">
+    <file>pumpkin.png</file>
+  </qresource>
+  <qresource prefix="RotateButton">
+    <file>rotate.png</file>
+  </qresource>
+  <qresource prefix="BrightnessButton">
+    <file>brightness.png</file>
+  </qresource>
+  <qresource prefix="GammaButton">
+    <file>gamma.png</file>
+  </qresource>
+  <qresource prefix="InvertButton">
+    <file>invertcolor.png</file>
+  </qresource>
+  <qresource prefix="HistogramButton">
+    <file>histogram.png</file>
+  </qresource>
+  <qresource prefix="DiagramButton">
+    <file>diagram.png</file>
+  </qresource>
+  <qresource prefix="DenoiseButton">
+    <file>denoise.png</file>
+  </qresource>
+  <qresource prefix="SobelButton">
+    <file>sobel.png</file>
+  </qresource>
+  <qresource prefix="KMean">
+    <file>kmean.png</file>
+  </qresource>
+  <qresource prefix="Prewitt">
+    <file>prewitt.png</file>
+  </qresource>
+  <qresource prefix="Threshold">
+    <file>threshold.png</file>
+  </qresource>
+  <qresource prefix="AdaptiveThreshold">
+    <file>a_threshold.png</file>
+  </qresource>
+  <qresource prefix="Grabcut">
+    <file>grabcut.png</file>
   </qresource>
 </RCC>
