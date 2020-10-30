@@ -43,7 +43,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_brightness: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_brightness')
         self.btn_denoise: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_denoise')
         self.btn_filter: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_filter')
-        self.btn_gamma: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_gamma')
         self.btn_grabcut: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_grabcut')
         self.btn_invert_color: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_invert_color')
         self.btn_noise: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_noise')
@@ -58,6 +57,34 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_transform: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_transform')
         self.btn_threshold: QtWidgets.QPushButton = self.findChild(QtWidgets.QPushButton, 'btn_threshold')
 
+<<<<<<< Updated upstream:main.py
+=======
+        #UI
+        self.lbl_background: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_background')
+        self.lbl_background_2: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_background_2')
+        self.lbl_tool: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_tool')
+        self.lbl_happy: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_happy')
+        self.lbl_option: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_option')
+        self.lbl_rotate: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_rotate')
+        self.lbl_brightness: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_brightness')
+        self.lbl_invert: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_invert')
+        self.lbl_histogram: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_histogram')
+        self.lbl_diagram: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_diagram')
+        self.lbl_denoise: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_denoise')
+        self.lbl_sobel: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_sobel')
+        self.lbl_k_mean: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_k_mean')
+        self.lbl_prewitt: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_prewitt')
+        self.lbl_threshold: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_threshold')
+        self.lbl_adaptive_threshold: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_adaptive_threshold')
+        self.lbl_grabcut: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_grabcut')
+        self.lbl_bugi: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_bugi')
+        self.lbl_duotien: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_duotien')
+        self.lbl_toan: QtWidgets.QLabel = self.findChild(QtWidgets.QLabel, 'lbl_toan')
+
+        self.tabWidget: QtWidgets.QTabWidget = self.findChild(QtWidgets.QTabWidget, 'tabWidget')
+
+
+>>>>>>> Stashed changes:masterUI/main.py
         #group boxes
         self.grb_Tool: QtWidgets.QGroupBox = self.findChild(QtWidgets.QGroupBox, 'grb_Tool')
 
@@ -75,7 +102,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.btn_brightness.clicked.connect(lambda: self.isClicked('btn_brightness'))
         self.btn_denoise.clicked.connect(lambda: self.isClicked('btn_denoise'))
         self.btn_filter.clicked.connect(lambda: self.isClicked('btn_filter'))
-        self.btn_gamma.clicked.connect(lambda: self.isClicked('btn_gamma'))
         self.btn_grabcut.clicked.connect(lambda: self.isClicked('btn_grabcut'))
         self.btn_invert_color.clicked.connect(lambda: self.isClicked('btn_invert_color'))
         self.btn_noise.clicked.connect(lambda: self.isClicked('btn_noise'))
